@@ -1772,6 +1772,11 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
+"@types/adal-angular@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@types/adal-angular/-/adal-angular-1.0.2.tgz#4addf95ac4453c2b384caff326f285d40a13e057"
+  integrity sha512-p/Y/oFq+q8/sYyfZCpVxZ1h5OgsynbBJG4EiiUVGESSlh4Ch+aXvHfuv5ZqUSYbp0JD2ZL1L+x1T3NsLtfqC0Q==
+
 "@types/js-yaml@^4.0.0":
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-4.0.5.tgz#738dd390a6ecc5442f35e7f03fa1431353f7e138"
@@ -2123,6 +2128,13 @@ axobject-query@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-2.2.0.tgz#943d47e10c0b704aa42275e20edf3722648989be"
   integrity sha512-Td525n+iPOOyUQIeBfcASuG6uJsDOITl7Mds5gFyerkWiX7qhUTdYUBlSgNMyVqtSJqwpt1kXGLdUt6SykLMRA==
+
+azure-maps-control@^2.1.10:
+  version "2.1.10"
+  resolved "https://registry.yarnpkg.com/azure-maps-control/-/azure-maps-control-2.1.10.tgz#1f0b22f020724faa9e78beb70ac04220d640dc95"
+  integrity sha512-dfU1xfk5KJQLsWPGnbLQdIj/3iWgIR6Zin+/NDmWBE2txqoNzToENsU/njfQBRDjzYpW/46IEidysqcJUEqCAg==
+  dependencies:
+    "@types/adal-angular" "^1.0.1"
 
 babel-plugin-dynamic-import-node@^2.3.3:
   version "2.3.3"

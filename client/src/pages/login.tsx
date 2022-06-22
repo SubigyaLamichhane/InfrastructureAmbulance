@@ -45,7 +45,6 @@ const Login: React.FC<LoginProps> = ({}) => {
               name="usernameOrEmail"
               placeholder="username or email"
               label="Username or Email"
-              textarea={false}
             />
             <Box mt={8}>
               <InputField
@@ -53,7 +52,6 @@ const Login: React.FC<LoginProps> = ({}) => {
                 placeholder="password"
                 label="Password"
                 type="password"
-                textarea={false}
               />
             </Box>
             <Box mt={8}>

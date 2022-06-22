@@ -35,10 +35,10 @@ const main = async () => {
 
   let RedisStore = connectRedis(session);
   let redis = new Redis({
-    host: 'redis-12967.c244.us-east-1-2.ec2.cloud.redislabs.com',
+    host: process.env.REDIS_URL,
     port: 12967,
     username: 'default',
-    password: '8BtwGIgWBN1LbhnpEqWT0Q139sOZOp2L',
+    password: process.env.REDIS_PASSWORD,
   });
 
   //applies cors is all routes

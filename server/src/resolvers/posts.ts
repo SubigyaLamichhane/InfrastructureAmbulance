@@ -14,7 +14,7 @@ import {
   Root,
   UseMiddleware,
 } from 'type-graphql';
-import { Post } from '../entities/Post';
+import { Complain } from '../entities/Complain';
 import { dataSource } from '../dataSource';
 
 @InputType()
@@ -26,26 +26,26 @@ class PostInput {
 }
 
 @ObjectType()
-class PaginatedPosts {
-  @Field(() => [Post])
-  posts: Post[];
+class PaginatedComplains {
+  @Field(() => [Complain])
+  posts: Complain[];
 
   @Field()
   hasMore: boolean;
 }
 
-@Resolver(Post)
-export class PostResolver {
+@Resolver(Complain)
+export class ComplainResolver {
   @FieldResolver()
-  textSnippet(@Root() root: Post): String {
-    return root.text.slice(0, 50);
+  textSnippet(@Root() root: Complain): String {
+    return root.description.slice(0, 50);
   }
 
-  @Query(() => PaginatedPosts)
-  async posts(
+  @Query(() => PaginatedComplains)
+  async Complains(
     @Arg('limit', () => Int) limit: number,
     @Arg('cursor', () => String, { nullable: true }) cursor: string | null
-  ): Promise<PaginatedPosts> {
+  ): Promise<PaginatedComplains> {
     const realLimit = limit >= 50 ? 50 : limit;
     const realLimitPlusOne = realLimit + 1;
 
@@ -55,7 +55,7 @@ export class PostResolver {
     //   replacements.push(new Date(parseInt(cursor)));
     // }
 
-    // const posts = await dataSource.query(
+    // const Complains = await dataSource.query(
     //   `
     //   select p.*,
     //   json_build_object(
@@ -65,7 +65,7 @@ export class PostResolver {
     //     'createdAt', u."createdAt",
     //     'updatedAt', u."updatedAt",
     //     ) creator
-    //   from post p
+    //   from Complain p
     //   inner join public.user u on u.id = p."creatorId"
     //   ${cursor ? 'where p."createdAt" < $2' : ''}
     //   order by p."createdAt" DESC
@@ -74,40 +74,40 @@ export class PostResolver {
     //   replacements
     // );
 
-    const post = dataSource
-      .getRepository(Post)
+    const complain = dataSource
+      .getRepository(Complain)
       .createQueryBuilder('p')
       //.innerJoinAndSelect('p.creator', 'u', 'u.id = p."creatorId"')
       .orderBy('"createdAt"', 'DESC') // if we dont put double quotes the A will be lowecased and error
       .take(realLimitPlusOne);
     if (cursor) {
-      post.where('p."createdAt" < :cursor', {
+      complain.where('p."createdAt" < :cursor', {
         cursor: new Date(parseInt(cursor)),
       });
     }
 
-    const posts = await post.getMany();
+    const complains = await complain.getMany();
 
-    const postsWithHasMore = {
-      posts: posts.slice(0, realLimit),
-      hasMore: posts.length === realLimitPlusOne,
+    const complainsWithHasMore = {
+      posts: complains.slice(0, realLimit),
+      hasMore: complains.length === realLimitPlusOne,
     };
 
-    return postsWithHasMore;
+    return complainsWithHasMore;
   }
 
-  @Query(() => Post, { nullable: true })
-  post(@Arg('id') id: number): Promise<Post | null> {
-    return Post.findOne({ where: { id } });
+  @Query(() => Complain, { nullable: true })
+  post(@Arg('id') id: number): Promise<Complain | null> {
+    return Complain.findOne({ where: { id } });
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => Complain)
   @UseMiddleware(isAuth)
   async createPost(
     @Arg('input') input: PostInput,
     @Ctx() { req }: MyContext
-  ): Promise<Post> {
-    const post = await Post.create({
+  ): Promise<Complain> {
+    const post = await Complain.create({
       ...input,
       creatorId: req.session.userId,
     }).save();
@@ -115,17 +115,17 @@ export class PostResolver {
     return post;
   }
 
-  @Mutation(() => Post, { nullable: true })
+  @Mutation(() => Complain, { nullable: true })
   async updatePost(
     @Arg('id', () => Int) id: number,
     @Arg('title', () => String, { nullable: true }) title: string
-  ): Promise<Post | null> {
-    const post = await Post.findOne({ where: { id } });
+  ): Promise<Complain | null> {
+    const post = await Complain.findOne({ where: { id } });
     if (!post) {
       return null;
     }
     if (typeof title !== 'undefined') {
-      await Post.update({ id }, { title });
+      await Complain.update({ id }, { title });
     }
     return post;
   }
@@ -133,7 +133,7 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async deletePost(@Arg('id') id: number): Promise<boolean> {
     try {
-      await Post.delete(id);
+      await Complain.delete(id);
     } catch {
       return false;
     }

@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
 import theme from '../theme';
+import '../styles/index.css';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import { PaginatedApprovedPosts, PaginatedPosts } from '../generated/graphql';
 
