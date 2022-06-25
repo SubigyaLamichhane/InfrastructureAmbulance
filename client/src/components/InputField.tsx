@@ -10,8 +10,8 @@ type InputFieldProps = InputHTMLAttributes<
 };
 
 const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
-  const [field, { error }] = useField(props);
   // !!error : error in string so checking empty string
+  const [field, { error }] = useField(props);
   return (
     <div className="w-full">
       <h2 className="text-xl">{props.label}</h2>
@@ -25,13 +25,13 @@ const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
         p-2
         mb-2
         "
-        {...field}
         {...props}
-        autoComplete="off"
+        {...field}
         id={field.name}
+        autoComplete="off"
         placeholder={props.placeholder}
       />
-      {error && <>{error}</>}
+      {error && <p className="text-red-600">{error}</p>}
     </div>
   );
 };

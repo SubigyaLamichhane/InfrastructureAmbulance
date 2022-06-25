@@ -18,12 +18,12 @@ const SelectField: React.FC<SelectFieldProps> = ({ size: _, ...props }) => {
         p-2
         mb-2
         "
-        {...field}
         {...props}
-        id={field.name}
         autoComplete="off"
+        {...field}
+        id={field.name}
       >
-        <option selected={true}>Ward No.</option>
+        <option value="Ward No.">Ward No.</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -57,7 +57,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ size: _, ...props }) => {
         <option value="31">31</option>
         <option value="32">32</option>
       </select>
-      {/* {error && <>{error}</>} */}
+      {error && <p className="text-red-600">{error}</p>}
     </div>
   );
 };

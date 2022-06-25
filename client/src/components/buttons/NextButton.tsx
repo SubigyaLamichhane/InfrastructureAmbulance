@@ -8,6 +8,7 @@ const LinkButton: React.FC<NextButtonProps> = ({ children, ...props }) => {
   return (
     <div className="flex justify-end">
       <button
+        type="submit"
         className="
           rounded-standard 
           border-2  

@@ -1,4 +1,6 @@
 import { InputType, Field, Int } from 'type-graphql';
+//@ts-ignore
+import Long from 'graphql-type-long';
 
 @InputType()
 export class UserInput {
@@ -14,7 +16,7 @@ export class UserInput {
   lastname: string;
   @Field()
   email: string;
-  @Field(() => Int)
+  @Field(() => Long)
   phoneNumber: number;
   @Field(() => Int)
   verificationCode: number;

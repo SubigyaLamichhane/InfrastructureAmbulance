@@ -11,8 +11,7 @@ import Redis from 'ioredis';
 import { buildSchema } from 'type-graphql';
 import { COOKIE_NAME, __prod__ } from './constants';
 import { dataSource } from './dataSource';
-import { ApprovedPostResolver } from './resolvers/approvedPosts';
-import { PostResolver } from './resolvers/posts';
+import { ComplainResolver } from './resolvers/posts';
 import { UserResolver } from './resolvers/user';
 //import argon2 from 'argon2';
 
@@ -71,7 +70,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [PostResolver, UserResolver, ApprovedPostResolver],
+      resolvers: [ComplainResolver, UserResolver],
       validate: false,
     }),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],

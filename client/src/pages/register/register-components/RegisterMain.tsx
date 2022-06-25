@@ -1,39 +1,133 @@
-import { Formik, Form } from 'formik';
-import React from 'react';
+import { withApollo } from '../../../utils/withApollo';
+import React, { useEffect, useState } from 'react';
 import HeaderText from '../../../components/Base/HeaderText';
 import NextButton from '../../../components/buttons/NextButton';
 import InputField from '../../../components/InputField';
 import SelectField from '../../../components/SelectField';
+import { useDoesEmailExistMutation } from '../../../generated/graphql';
+import { connect } from 'react-redux';
+import {
+  RegisterFormI,
+  updateForm,
+  UpdateFormActionI,
+} from '../../../store/actions';
+import { StoreStateI } from '../../../store/reducers';
+import { Formik, Form } from 'formik';
 
 interface RegisterMainProps {
   onNext: () => void;
+  registerForm: RegisterFormI;
+  updateRegisterForm: (data: RegisterFormI) => UpdateFormActionI;
 }
 
-const RegisterMain: React.FC<RegisterMainProps> = ({ onNext }) => {
+interface FormValuesType {
+  firstname: string;
+  lastname: string;
+  wardNo: 'Ward No.' | number;
+  email: string;
+}
+
+const RegisterMain: React.FC<RegisterMainProps> = ({
+  onNext,
+  updateRegisterForm,
+  registerForm,
+}) => {
+  let isError = false;
+  const [doesEmailExist] = useDoesEmailExistMutation();
+
   return (
-    <div>
-      <HeaderText>Register</HeaderText>
-      <div className="mt-10">
-        <SelectField />
-        <InputField
-          name="firstname"
-          label="First Name"
-          placeholder="Enter your firstname"
-        />
-        <InputField
-          name="lastname"
-          label="Last Name"
-          placeholder="Enter your lastname"
-        />
-        <InputField
-          name="email"
-          label="Email Address"
-          placeholder="example@email.com"
-        />
-        <NextButton onClick={onNext}>Next</NextButton>
-      </div>
-    </div>
+    <Formik
+      initialValues={
+        {
+          firstname: registerForm.firstname,
+          lastname: registerForm.lastname,
+          wardNo: registerForm.wardNo,
+          email: registerForm.email,
+        } as FormValuesType
+      }
+      onSubmit={async (values: FormValuesType, { setErrors }) => {
+        if (!values.email) {
+          isError = true;
+          setErrors({
+            email: 'This field is required',
+          });
+        } else if (!values.firstname) {
+          isError = true;
+          setErrors({
+            firstname: 'This field is required',
+          });
+        } else if (!values.lastname) {
+          isError = true;
+          setErrors({
+            lastname: 'This field is required',
+          });
+        } else if (!values.wardNo || values.wardNo === 'Ward No.') {
+          isError = true;
+          setErrors({
+            wardNo: 'This field is required',
+          });
+        } else {
+          isError = false;
+        }
+
+        const response = await doesEmailExist({
+          variables: {
+            email: values.email,
+          },
+        });
+        if (response.data.doesEmailExist) {
+          isError = true;
+          setErrors({
+            email: 'This email is already registered',
+          });
+        }
+
+        if (!isError) {
+          updateRegisterForm({ ...registerForm, ...values });
+          onNext();
+        }
+      }}
+    >
+      {({ values, handleChange, isSubmitting }) => {
+        return (
+          <Form autoComplete="off">
+            <div>
+              <HeaderText>Register</HeaderText>
+              <div className="mt-10">
+                <SelectField name="wardNo" />
+                <InputField
+                  name="firstname"
+                  label="First Name"
+                  key="firstname"
+                  placeholder="Enter your firstname"
+                />
+                <InputField
+                  name="lastname"
+                  key="lastname"
+                  label="Last Name"
+                  placeholder="Enter your lastname"
+                />
+                <InputField
+                  name="email"
+                  type="email"
+                  key="email"
+                  label="Email Address"
+                  placeholder="example@email.com"
+                />
+                <NextButton>Next</NextButton>
+              </div>
+            </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 
-export default RegisterMain;
+const mapStateToProps = ({ registerForm }: StoreStateI) => {
+  return { registerForm };
+};
+
+export default connect(mapStateToProps, {
+  updateRegisterForm: updateForm,
+})(RegisterMain);

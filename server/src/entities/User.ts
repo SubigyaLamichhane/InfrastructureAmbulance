@@ -9,6 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Complain } from './Complain';
+//@ts-ignore
+import Long from 'graphql-type-long';
 
 @ObjectType()
 @Entity()
@@ -48,8 +50,8 @@ export class User extends BaseEntity {
   @Column({ type: 'text' })
   lastname!: string;
 
-  @Field(() => Int)
-  @Column({ type: 'int' })
+  @Field(() => Long)
+  @Column({ type: 'bigint' })
   phonenumber!: number;
 
   @OneToMany(() => Complain, (complain) => complain.creator)

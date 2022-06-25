@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { useLogoutMutation, useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { useApolloClient } from '@apollo/client';
 import BalenChasma from '../assests/Asset 2.png';

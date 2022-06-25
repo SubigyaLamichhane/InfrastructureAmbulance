@@ -1,15 +1,15 @@
+import { Formik } from 'formik';
+import Image from 'next/image';
 import React, { useState } from 'react';
 import construction from '../../assests/Asset 1.png';
-import Image from 'next/image';
-import HeaderText from '../../components/Base/HeaderText';
 import Navbar from '../../components/Navbar';
-import InputField from '../../components/InputField';
-import { Form, Formik } from 'formik';
-import NextButton from '../../components/buttons/NextButton';
-import RegisterMain from './register-components/RegisterMain';
+import { withApollo } from '../../utils/withApollo';
 import PhoneNumberEntry from './register-components/PhoneNumberEntry';
+import RegisterMain from './register-components/RegisterMain';
 import UsernameEntry from './register-components/UsernameEntry';
 import VerifyNumber from './register-components/VerifyNumber';
+import { Provider } from 'react-redux';
+import { store } from '../../store/store';
 
 interface IndexProps {}
 
@@ -30,10 +30,14 @@ const selectPage = (
           onNext={() => {
             setPage('verify-number');
           }}
+          onBack={() => {
+            setPage('username-entry');
+          }}
         />
       );
     case 'register-main':
       return (
+        //@ts-ignore
         <RegisterMain
           onNext={() => {
             setPage('username-entry');
@@ -46,10 +50,19 @@ const selectPage = (
           onNext={() => {
             setPage('phonenumber-entry');
           }}
+          onBack={() => {
+            setPage('register-main');
+          }}
         />
       );
     case 'verify-number':
-      return <VerifyNumber />;
+      return (
+        <VerifyNumber
+          onBack={() => {
+            setPage('phonenumber-entry');
+          }}
+        />
+      );
   }
 };
 
@@ -59,14 +72,8 @@ const Index: React.FC<IndexProps> = ({}) => {
     <div>
       <Navbar />
       <div className="flex justify-between">
-        <div className="w-3/6">
-          <Formik initialValues={{ username: '' }} onSubmit={() => {}}>
-            {({ values, handleChange, isSubmitting }) => {
-              return <Form>{selectPage(page, setPage)}</Form>;
-            }}
-          </Formik>
-        </div>
-        <div className="h-3/6 w-3/6 ml-10 invisible lg:visible">
+        <div className="w-full md:w-3/6">{selectPage(page, setPage)}</div>
+        <div className="h-3/6 w-3/6 md:ml-10 hidden md:inline">
           <Image src={construction} alt="construction svg"></Image>
         </div>
       </div>
@@ -74,4 +81,12 @@ const Index: React.FC<IndexProps> = ({}) => {
   );
 };
 
-export default Index;
+const WithProvider: React.FC<IndexProps> = ({}) => {
+  return (
+    <Provider store={store}>
+      <Index />
+    </Provider>
+  );
+};
+
+export default withApollo({ ssr: false })(WithProvider);

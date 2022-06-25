@@ -1,7 +1,0 @@
-mutation ApprovePost($id: Int!) {
-  approvePost(id: $id) {
-    id
-    title
-    creatorId
-  }
-}

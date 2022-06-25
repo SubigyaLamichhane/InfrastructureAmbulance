@@ -1,28 +1,105 @@
-import { Form } from 'formik';
+import { Form, Formik } from 'formik';
 import React from 'react';
+import { connect } from 'react-redux';
 import HeaderText from '../../../components/Base/HeaderText';
+import BackButton from '../../../components/buttons/BackButton';
 import NextButton from '../../../components/buttons/NextButton';
 import InputField from '../../../components/InputField';
+import { useDoesUsernameExistMutation } from '../../../generated/graphql';
+import {
+  RegisterFormI,
+  updateForm,
+  UpdateFormActionI,
+} from '../../../store/actions';
+import { StoreStateI } from '../../../store/reducers';
 
 interface UsernameEntryProps {
   onNext: () => void;
+  onBack: () => void;
+  updateRegisterForm: (data: RegisterFormI) => UpdateFormActionI;
+  registerForm: RegisterFormI;
 }
 
-const UsernameEntry: React.FC<UsernameEntryProps> = ({ onNext }) => {
+interface FormValuesType {
+  username: string;
+  password: string;
+}
+
+const UsernameEntry: React.FC<UsernameEntryProps> = ({
+  onNext,
+  onBack,
+  registerForm,
+  updateRegisterForm,
+}) => {
+  let isError: boolean = false;
+  const [doesUsernameExist] = useDoesUsernameExistMutation();
   return (
-    <div>
-      <HeaderText>Register</HeaderText>
-      <div className="mt-10">
-        <InputField name="username" label="User Name" placeholder="Username" />
-        <InputField
-          name="password"
-          label="Password"
-          placeholder="Enter password..."
-        />
-        <NextButton onClick={onNext}>Next</NextButton>
-      </div>
-    </div>
+    <Formik
+      initialValues={{
+        username: registerForm.username,
+        password: registerForm.password,
+      }}
+      onSubmit={async (values: FormValuesType, { setErrors }) => {
+        if (!values.username) {
+          setErrors({
+            username: 'This field is required',
+          });
+          isError = true;
+        }
+        if (!values.password) {
+          setErrors({
+            password: 'This field is required',
+          });
+          isError = true;
+        }
+
+        const response = await doesUsernameExist({
+          variables: {
+            username: values.username,
+          },
+        });
+        if (response.data.doesUsernameExist) {
+          isError = true;
+        }
+        if (!isError) {
+          updateRegisterForm({ ...registerForm, ...values });
+          onNext();
+        }
+      }}
+    >
+      {({ values, handleChange, isSubmitting }) => {
+        return (
+          <Form>
+            <div>
+              <HeaderText>Register</HeaderText>
+              <div className="mt-10">
+                <BackButton type="submit" onClick={onBack}>
+                  Back
+                </BackButton>
+                <InputField
+                  name="username"
+                  label="User Name"
+                  placeholder="Username"
+                />
+                <InputField
+                  name="password"
+                  label="Password"
+                  placeholder="Enter password..."
+                />
+                <NextButton type="submit">Next</NextButton>
+              </div>
+            </div>
+          </Form>
+        );
+      }}
+    </Formik>
   );
 };
 
-export default UsernameEntry;
+const mapStateToProps = ({ registerForm }: StoreStateI) => {
+  return { registerForm };
+};
+
+export default connect(mapStateToProps, {
+  updateRegisterForm: updateForm,
+})(UsernameEntry);

@@ -12,10 +12,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PostResolver = void 0;
+exports.ComplainResolver = void 0;
 const isAuth_1 = require("../utils/middleware/isAuth");
 const type_graphql_1 = require("type-graphql");
-const Post_1 = require("../entities/Post");
+const Complain_1 = require("../entities/Complain");
 const dataSource_1 = require("../dataSource");
 let PostInput = class PostInput {
 };
@@ -30,63 +30,63 @@ __decorate([
 PostInput = __decorate([
     (0, type_graphql_1.InputType)()
 ], PostInput);
-let PaginatedPosts = class PaginatedPosts {
+let PaginatedComplains = class PaginatedComplains {
 };
 __decorate([
-    (0, type_graphql_1.Field)(() => [Post_1.Post]),
+    (0, type_graphql_1.Field)(() => [Complain_1.Complain]),
     __metadata("design:type", Array)
-], PaginatedPosts.prototype, "posts", void 0);
+], PaginatedComplains.prototype, "posts", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", Boolean)
-], PaginatedPosts.prototype, "hasMore", void 0);
-PaginatedPosts = __decorate([
+], PaginatedComplains.prototype, "hasMore", void 0);
+PaginatedComplains = __decorate([
     (0, type_graphql_1.ObjectType)()
-], PaginatedPosts);
-let PostResolver = class PostResolver {
+], PaginatedComplains);
+let ComplainResolver = class ComplainResolver {
     textSnippet(root) {
-        return root.text.slice(0, 50);
+        return root.description.slice(0, 50);
     }
-    async posts(limit, cursor) {
+    async Complains(limit, cursor) {
         const realLimit = limit >= 50 ? 50 : limit;
         const realLimitPlusOne = realLimit + 1;
-        const post = dataSource_1.dataSource
-            .getRepository(Post_1.Post)
+        const complain = dataSource_1.dataSource
+            .getRepository(Complain_1.Complain)
             .createQueryBuilder('p')
             .orderBy('"createdAt"', 'DESC')
             .take(realLimitPlusOne);
         if (cursor) {
-            post.where('p."createdAt" < :cursor', {
+            complain.where('p."createdAt" < :cursor', {
                 cursor: new Date(parseInt(cursor)),
             });
         }
-        const posts = await post.getMany();
-        const postsWithHasMore = {
-            posts: posts.slice(0, realLimit),
-            hasMore: posts.length === realLimitPlusOne,
+        const complains = await complain.getMany();
+        const complainsWithHasMore = {
+            posts: complains.slice(0, realLimit),
+            hasMore: complains.length === realLimitPlusOne,
         };
-        return postsWithHasMore;
+        return complainsWithHasMore;
     }
     post(id) {
-        return Post_1.Post.findOne({ where: { id } });
+        return Complain_1.Complain.findOne({ where: { id } });
     }
     async createPost(input, { req }) {
-        const post = await Post_1.Post.create(Object.assign(Object.assign({}, input), { creatorId: req.session.userId })).save();
+        const post = await Complain_1.Complain.create(Object.assign(Object.assign({}, input), { creatorId: req.session.userId })).save();
         return post;
     }
     async updatePost(id, title) {
-        const post = await Post_1.Post.findOne({ where: { id } });
+        const post = await Complain_1.Complain.findOne({ where: { id } });
         if (!post) {
             return null;
         }
         if (typeof title !== 'undefined') {
-            await Post_1.Post.update({ id }, { title });
+            await Complain_1.Complain.update({ id }, { title });
         }
         return post;
     }
     async deletePost(id) {
         try {
-            await Post_1.Post.delete(id);
+            await Complain_1.Complain.delete(id);
         }
         catch (_a) {
             return false;
@@ -98,50 +98,50 @@ __decorate([
     (0, type_graphql_1.FieldResolver)(),
     __param(0, (0, type_graphql_1.Root)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Post_1.Post]),
+    __metadata("design:paramtypes", [Complain_1.Complain]),
     __metadata("design:returntype", String)
-], PostResolver.prototype, "textSnippet", null);
+], ComplainResolver.prototype, "textSnippet", null);
 __decorate([
-    (0, type_graphql_1.Query)(() => PaginatedPosts),
+    (0, type_graphql_1.Query)(() => PaginatedComplains),
     __param(0, (0, type_graphql_1.Arg)('limit', () => type_graphql_1.Int)),
     __param(1, (0, type_graphql_1.Arg)('cursor', () => String, { nullable: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
-], PostResolver.prototype, "posts", null);
+], ComplainResolver.prototype, "Complains", null);
 __decorate([
-    (0, type_graphql_1.Query)(() => Post_1.Post, { nullable: true }),
+    (0, type_graphql_1.Query)(() => Complain_1.Complain, { nullable: true }),
     __param(0, (0, type_graphql_1.Arg)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], PostResolver.prototype, "post", null);
+], ComplainResolver.prototype, "post", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => Post_1.Post),
+    (0, type_graphql_1.Mutation)(() => Complain_1.Complain),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)('input')),
     __param(1, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [PostInput, Object]),
     __metadata("design:returntype", Promise)
-], PostResolver.prototype, "createPost", null);
+], ComplainResolver.prototype, "createPost", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => Post_1.Post, { nullable: true }),
+    (0, type_graphql_1.Mutation)(() => Complain_1.Complain, { nullable: true }),
     __param(0, (0, type_graphql_1.Arg)('id', () => type_graphql_1.Int)),
     __param(1, (0, type_graphql_1.Arg)('title', () => String, { nullable: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
-], PostResolver.prototype, "updatePost", null);
+], ComplainResolver.prototype, "updatePost", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
     __param(0, (0, type_graphql_1.Arg)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], PostResolver.prototype, "deletePost", null);
-PostResolver = __decorate([
-    (0, type_graphql_1.Resolver)(Post_1.Post)
-], PostResolver);
-exports.PostResolver = PostResolver;
+], ComplainResolver.prototype, "deletePost", null);
+ComplainResolver = __decorate([
+    (0, type_graphql_1.Resolver)(Complain_1.Complain)
+], ComplainResolver);
+exports.ComplainResolver = ComplainResolver;
 //# sourceMappingURL=posts.js.map
