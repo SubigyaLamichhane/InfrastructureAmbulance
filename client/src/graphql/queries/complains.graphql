@@ -1,0 +1,18 @@
+query Complains($limit: Int!, $cursor: String) {
+  complains(limit: $limit, cursor: $cursor) {
+    complains {
+      id
+      descriptionSnippet
+      title
+      createdAt
+      wardNo
+      user {
+        user {
+          id
+          username
+        }
+      }
+    }
+    hasMore
+  }
+}

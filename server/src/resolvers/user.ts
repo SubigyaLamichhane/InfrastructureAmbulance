@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { Arg, Ctx, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { User } from '../entities/User';
 import { MyContext } from '../types';
 import { UserInput } from './user/UserInput';
@@ -7,6 +7,7 @@ import { UserResponse } from './user/UserResponse';
 //@ts-ignore
 import Long from 'graphql-type-long';
 import { authentication } from '../firebaseConfig';
+import { COOKIE_NAME } from '../constants';
 
 @Resolver(User)
 export class UserResolver {
@@ -54,7 +55,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg('input', () => UserInput) input: UserInput,
-    @Ctx() { redis }: MyContext
+    @Ctx() { req }: MyContext
   ) {
     let user = await User.findOne({
       where: { phonenumber: input.phoneNumber },
@@ -80,14 +81,17 @@ export class UserResolver {
         errors: true,
       };
     }
-    authentication;
-    const verificationCode = await redis.get(input.phoneNumber.toString());
-    if (verificationCode) {
-      if (input.verificationCode === parseInt(verificationCode) || true) {
+    const decodedToken = await authentication.verifyIdToken(input.idToken);
+    const uid = decodedToken.uid;
+    const userRecord = await authentication.getUser(uid);
+    if (userRecord.phoneNumber) {
+      if (
+        input.phoneNumber === parseInt(userRecord.phoneNumber?.slice(4, 14))
+      ) {
         const hashedPassword: string = await argon2.hash(input.password);
         const { email, firstname, lastname, phoneNumber, username, wardNo } =
           input;
-        const user = User.create({
+        const user = await User.create({
           email,
           firstname,
           lastname,
@@ -95,16 +99,107 @@ export class UserResolver {
           phonenumber: phoneNumber,
           username,
           wardNo,
+          isAdmin: false,
         }).save();
+        if (user) {
+          req.session.userId = user.id;
+          return {
+            errors: false,
+            user: user,
+          };
+        }
         return {
-          errors: false,
-          user: user,
+          errors: true,
         };
       }
     }
-
     return {
       errors: true,
+    };
+  }
+
+  @Mutation(() => UserResponse)
+  async login(
+    @Arg('usernameOrNumber') usernameOrNumber: string,
+    @Arg('password') password: string,
+    @Ctx() { req }: MyContext
+  ) {
+    if (!usernameOrNumber) {
+      console.log('ran');
+      return {
+        errors: true,
+      };
+    }
+    if (!password) {
+      console.log('ran');
+      return {
+        errors: true,
+      };
+    }
+    let user = await User.findOne({ where: { username: usernameOrNumber } });
+    if (!user) {
+      user = await User.findOne({
+        where: { phonenumber: parseInt(usernameOrNumber) },
+      });
+      console.log(user);
+      if (!user) {
+        return {
+          errors: true,
+        };
+      }
+    }
+    const valid = await argon2.verify(user.password, password);
+
+    if (valid) {
+      console.log('password');
+      req.session.userId = user.id;
+      return {
+        errors: false,
+        user: user,
+      };
+    }
+    console.log('incorrect');
+    return {
+      errors: true,
+    };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME);
+        if (err) {
+          console.log(err);
+          resolve(false);
+          return;
+        }
+
+        resolve(true);
+      })
+    );
+  }
+
+  @Query(() => User, { nullable: true })
+  me(@Ctx() { req }: MyContext) {
+    // you are not logged in
+    if (!req.session.userId) {
+      return null;
+    }
+
+    return User.findOne({ where: { id: req.session.userId } });
+  }
+
+  @Query(() => UserResponse, { nullable: true })
+  async user(@Arg('id', () => Int) id: number): Promise<UserResponse> {
+    const user = await User.findOne({ where: { id } });
+    if (!user) {
+      return {
+        errors: true,
+      };
+    }
+    return {
+      user,
     };
   }
 }

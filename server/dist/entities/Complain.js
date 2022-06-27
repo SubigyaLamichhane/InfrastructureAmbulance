@@ -56,15 +56,15 @@ __decorate([
     __metadata("design:type", Number)
 ], Complain.prototype, "wardNo", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Int),
-    (0, typeorm_1.Column)({ type: 'int' }),
+    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
+    (0, typeorm_1.Column)({ type: 'float' }),
     __metadata("design:type", Number)
 ], Complain.prototype, "latitude", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(() => type_graphql_1.Int),
-    (0, typeorm_1.Column)({ type: 'int' }),
+    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
+    (0, typeorm_1.Column)({ type: 'float' }),
     __metadata("design:type", Number)
-], Complain.prototype, "langitude", void 0);
+], Complain.prototype, "longitude", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
     (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.complaints),

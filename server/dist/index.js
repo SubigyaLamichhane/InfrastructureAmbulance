@@ -15,7 +15,7 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const type_graphql_1 = require("type-graphql");
 const constants_1 = require("./constants");
 const dataSource_1 = require("./dataSource");
-const posts_1 = require("./resolvers/posts");
+const complain_1 = require("./resolvers/complain");
 const user_1 = require("./resolvers/user");
 const main = async () => {
     await dataSource_1.dataSource.initialize();
@@ -50,7 +50,7 @@ const main = async () => {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: await (0, type_graphql_1.buildSchema)({
-            resolvers: [posts_1.ComplainResolver, user_1.UserResolver],
+            resolvers: [complain_1.ComplainResolver, user_1.UserResolver],
             validate: false,
         }),
         plugins: [(0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)()],

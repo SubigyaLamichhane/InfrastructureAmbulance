@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from 'type-graphql';
+import { Field, Float, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
@@ -41,13 +41,13 @@ export class Complain extends BaseEntity {
   @Column({ type: 'int' })
   wardNo: number;
 
-  @Field(() => Int)
-  @Column({ type: 'int' })
+  @Field(() => Float)
+  @Column({ type: 'float' })
   latitude: number;
 
-  @Field(() => Int)
-  @Column({ type: 'int' })
-  langitude: number;
+  @Field(() => Float)
+  @Column({ type: 'float' })
+  longitude: number;
 
   @Field()
   @ManyToOne(() => User, (user) => user.complaints)

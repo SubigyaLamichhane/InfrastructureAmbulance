@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import HeaderText from '../../../components/Base/HeaderText';
 import NextButton from '../../../components/buttons/NextButton';
 import InputField from '../../../components/InputField';
-import SelectField from '../../../components/SelectField';
 import { useDoesEmailExistMutation } from '../../../generated/graphql';
 import { connect } from 'react-redux';
 import {
@@ -13,6 +12,7 @@ import {
 } from '../../../store/actions';
 import { StoreStateI } from '../../../store/reducers';
 import { Formik, Form } from 'formik';
+import SelectWard from '../../../components/SelectWard';
 
 interface RegisterMainProps {
   onNext: () => void;
@@ -94,7 +94,7 @@ const RegisterMain: React.FC<RegisterMainProps> = ({
             <div>
               <HeaderText>Register</HeaderText>
               <div className="mt-10">
-                <SelectField name="wardNo" />
+                <SelectWard name="wardNo" />
                 <InputField
                   name="firstname"
                   label="First Name"

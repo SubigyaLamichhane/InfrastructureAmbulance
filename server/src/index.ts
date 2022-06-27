@@ -11,7 +11,7 @@ import Redis from 'ioredis';
 import { buildSchema } from 'type-graphql';
 import { COOKIE_NAME, __prod__ } from './constants';
 import { dataSource } from './dataSource';
-import { ComplainResolver } from './resolvers/posts';
+import { ComplainResolver } from './resolvers/complain';
 import { UserResolver } from './resolvers/user';
 //import argon2 from 'argon2';
 
@@ -93,13 +93,6 @@ const main = async () => {
   app.listen(PORT, () => {
     console.log(`Server started at port ${PORT}`);
   });
-  // const post = orm.em.create(Post, {
-  //   title: 'my first post',
-  // } as RequiredEntityData<Post>);
-  // await orm.em.persistAndFlush(post);
 };
 
 main();
-
-// 8.A5MY.Z7tZhLpX
-// S4sj3fshp1h6nkdin6qclz6ta3iwf180gvg88my3on0rhjr1aon

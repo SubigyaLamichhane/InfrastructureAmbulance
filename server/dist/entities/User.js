@@ -82,11 +82,6 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'boolean' }),
     __metadata("design:type", Boolean)
 ], User.prototype, "isAdmin", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => Boolean),
-    (0, typeorm_1.Column)({ type: 'boolean' }),
-    __metadata("design:type", Boolean)
-], User.prototype, "verified", void 0);
 User = __decorate([
     (0, type_graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()

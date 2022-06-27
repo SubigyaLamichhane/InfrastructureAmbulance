@@ -8,9 +8,7 @@ export interface RegisterFormI {
   email: string;
   username: string;
   password: string;
-  phonenumber: string;
-  verificationCode: string;
-  registerMainError: boolean;
+  phoneNumber: string;
 }
 
 export interface UpdateFormActionI {

@@ -18,6 +18,6 @@ export class UserInput {
   email: string;
   @Field(() => Long)
   phoneNumber: number;
-  @Field(() => Int)
-  verificationCode: number;
+  @Field()
+  idToken: string;
 }

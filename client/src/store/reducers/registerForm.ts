@@ -11,11 +11,9 @@ const initialState: RegisterFormI = {
   firstname: '',
   lastname: '',
   password: '',
-  phonenumber: '',
+  phoneNumber: '',
   username: '',
-  verificationCode: '',
   wardNo: 'Ward No.',
-  registerMainError: false,
 };
 
 export const registerFormReducer: Reducer<RegisterFormI, UpdateFormActionI> = (

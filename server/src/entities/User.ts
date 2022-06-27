@@ -60,8 +60,4 @@ export class User extends BaseEntity {
   @Field(() => Boolean)
   @Column({ type: 'boolean' })
   isAdmin: Boolean;
-
-  @Field(() => Boolean)
-  @Column({ type: 'boolean' })
-  verified: Boolean;
 }

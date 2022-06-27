@@ -85,6 +85,7 @@ const UsernameEntry: React.FC<UsernameEntryProps> = ({
                   name="password"
                   label="Password"
                   placeholder="Enter password..."
+                  type="password"
                 />
                 <NextButton type="submit">Next</NextButton>
               </div>

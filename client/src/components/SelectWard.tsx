@@ -14,7 +14,7 @@ const SelectField: React.FC<SelectFieldProps> = ({ size: _, ...props }) => {
         rounded-standard 
         border-black 
         focus:border-4
-        w-1/2
+        w-full
         p-2
         mb-2
         "

@@ -1,0 +1,7 @@
+mutation CreateComplain($input: ComplainInput!) {
+  createComplain(input: $input) {
+    id
+    title
+    descriptionSnippet
+  }
+}

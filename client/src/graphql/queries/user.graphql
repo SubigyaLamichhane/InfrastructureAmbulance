@@ -1,0 +1,14 @@
+query User($id: Int!) {
+  user(id: $id) {
+    errors
+    user {
+      id
+      username
+      firstname
+      lastname
+      email
+      phonenumber
+      wardNo
+    }
+  }
+}

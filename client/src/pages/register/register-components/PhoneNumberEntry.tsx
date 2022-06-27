@@ -47,22 +47,21 @@ const PhoneNumberEntry: React.FC<PhoneNumberEntryProps> = ({
   let [doesPhoneNumberExist] = useDoesPhoneNumberExistMutation();
   return (
     <Formik
-      initialValues={{ phonenumber: '' }}
+      initialValues={{ phonenumber: registerForm.phoneNumber }}
       onSubmit={async (values: FormValuesType, { setErrors }) => {
         generateRecaptcha();
         let phonenumber: string = values.phonenumber;
         //@ts-ignore
         let appVerifier = window.recaptchaVerifier;
-        // if (phonenumber.length === 10) {
         if (!phonenumber) {
           setErrors({
             phonenumber: 'This field is required',
           });
         } else {
           if (
-            phonenumber.length !== 10 &&
-            phonenumber[0] == '9' &&
-            phonenumber[1] == '8'
+            phonenumber.toString().length !== 10 ||
+            phonenumber.toString()[0] != '9' ||
+            phonenumber.toString()[1] != '8'
           ) {
             setErrors({
               phonenumber: 'Please enter a valid phone number.',
@@ -78,10 +77,14 @@ const PhoneNumberEntry: React.FC<PhoneNumberEntryProps> = ({
                 phonenumber: 'The phone number you entered already exists',
               });
             } else {
-              updateRegisterForm({ ...registerForm, ...values });
               phonenumber = '+977' + phonenumber;
               signInWithPhoneNumber(authentication, phonenumber, appVerifier)
                 .then((confirmationResult) => {
+                  updateRegisterForm({
+                    ...registerForm,
+                    phoneNumber: phonenumber,
+                  });
+                  console.log(registerForm);
                   //@ts-ignore
                   window.confirmationResult = confirmationResult;
                   onNext();

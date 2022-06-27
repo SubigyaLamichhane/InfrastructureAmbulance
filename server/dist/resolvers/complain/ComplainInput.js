@@ -8,49 +8,37 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserInput = void 0;
+exports.ComplainInput = void 0;
 const type_graphql_1 = require("type-graphql");
-const graphql_type_long_1 = __importDefault(require("graphql-type-long"));
-let UserInput = class UserInput {
+let ComplainInput = class ComplainInput {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], UserInput.prototype, "username", void 0);
+], ComplainInput.prototype, "title", void 0);
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
-], UserInput.prototype, "password", void 0);
+], ComplainInput.prototype, "description", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], ComplainInput.prototype, "category", void 0);
 __decorate([
     (0, type_graphql_1.Field)(() => type_graphql_1.Int),
     __metadata("design:type", Number)
-], UserInput.prototype, "wardNo", void 0);
+], ComplainInput.prototype, "wardNo", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserInput.prototype, "firstname", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserInput.prototype, "lastname", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserInput.prototype, "email", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(() => graphql_type_long_1.default),
+    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
     __metadata("design:type", Number)
-], UserInput.prototype, "phoneNumber", void 0);
+], ComplainInput.prototype, "latitude", void 0);
 __decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], UserInput.prototype, "idToken", void 0);
-UserInput = __decorate([
+    (0, type_graphql_1.Field)(() => type_graphql_1.Float),
+    __metadata("design:type", Number)
+], ComplainInput.prototype, "longitude", void 0);
+ComplainInput = __decorate([
     (0, type_graphql_1.InputType)()
-], UserInput);
-exports.UserInput = UserInput;
-//# sourceMappingURL=UserInput.js.map
+], ComplainInput);
+exports.ComplainInput = ComplainInput;
+//# sourceMappingURL=ComplainInput.js.map

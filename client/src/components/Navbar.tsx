@@ -6,10 +6,59 @@ import { useApolloClient } from '@apollo/client';
 import BalenChasma from '../assests/Asset 2.png';
 import Image from 'next/image';
 import LinkButton from './buttons/LinkButton';
+import { useLogoutMutation, useMeQuery } from '../generated/graphql';
+import { useRouter } from 'next/router';
+import StandardButton from './buttons/StandardButton';
 
 interface NavbarProps {}
 
 const Navbar: React.FC<NavbarProps> = ({}) => {
+  const router = useRouter();
+  const [logout, { loading: logoutFetching }] = useLogoutMutation();
+  const apolloClient = useApolloClient();
+  const { data, loading } = useMeQuery({
+    skip: isServer(),
+  });
+
+  let buttons: any = null;
+
+  if (loading) {
+    buttons = <div>Loading</div>;
+  } else if (!data?.me) {
+    buttons = (
+      <div className="flex">
+        <div className="mr-2">
+          <LinkButton href="/login">Login</LinkButton>
+        </div>
+
+        <LinkButton href="/register">Register</LinkButton>
+      </div>
+    );
+  } else {
+    buttons = (
+      <div>
+        <div className="flex">
+          <div className="mr-2">
+            <LinkButton href="/create-complain">Create Complain</LinkButton>
+          </div>
+          <div>
+            <LinkButton
+              onClick={() => {
+                async () => {
+                  await logout();
+                  await apolloClient.resetStore();
+                };
+              }}
+              href="/"
+            >
+              Logout
+            </LinkButton>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex my-6 justify-between items-center">
       <div className="flex items-center">
@@ -24,9 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
           </h1>
         </div>
       </div>
-      <div className="">
-        <LinkButton href="/login">Login</LinkButton>
-      </div>
+      {buttons}
     </div>
   );
 };

@@ -1,11 +1,15 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
-interface LinkButtonProps {
+type LinkButtonProps = HTMLAttributes<HTMLDivElement> & {
   href: string;
-}
+};
 
-const LinkButton: React.FC<LinkButtonProps> = ({ href, children }) => {
+const LinkButton: React.FC<LinkButtonProps> = ({
+  href,
+  children,
+  ...props
+}) => {
   return (
     <div
       className="
@@ -18,6 +22,7 @@ const LinkButton: React.FC<LinkButtonProps> = ({ href, children }) => {
       hover:font-bold
       hover:cursor-pointer
       "
+      {...props}
     >
       <Link href={href}>
         <p className="text-xl my-0">{children}</p>

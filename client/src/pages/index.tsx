@@ -1,24 +1,18 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  Link,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
-import NextLink from 'next/link';
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React from 'react';
+import HeaderText from '../components/Base/HeaderText';
+import StandardButton from '../components/buttons/StandardButton';
 import Navbar from '../components/Navbar';
-import Wrapper from '../components/Wrapper';
-import { useApprovedPostsQuery, useMeQuery } from '../generated/graphql';
+
+import { useComplainsQuery, useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 import { withApollo } from '../utils/withApollo';
 
 interface IndexProps {}
 
 const Index: React.FC<IndexProps> = ({}) => {
-  const { data, loading, fetchMore, variables } = useApprovedPostsQuery({
+  const router = useRouter();
+  const { data, loading, fetchMore, variables } = useComplainsQuery({
     variables: {
       limit: 15,
       cursor: null,
@@ -29,55 +23,98 @@ const Index: React.FC<IndexProps> = ({}) => {
   });
 
   if (!loading && !data) {
-    return <div>There are no posts.</div>;
+    return <div>There are no Complains</div>;
   }
 
-  return (
-    <div>
-      <Navbar />
-      <Wrapper>
-        <Flex mb={10} mt={10}>
-          <Heading>Kec Thoughts</Heading>
-          {meData
-            ? meData?.me && (
-                <NextLink href="/create-post">
-                  <Link ml={'auto'}>Create Post</Link>
-                </NextLink>
-              )
-            : null}
-        </Flex>
-        <Stack spacing={8}>
+  if (!MeLoading && meData) {
+    if (meData.me) {
+      return (
+        <div>
+          <Navbar />
+
+          <HeaderText>Complaints:</HeaderText>
+
           {data &&
-            data.approvedPosts.posts.map((post) => (
-              <Box key={post.id} p={5} shadow="md" borderWidth={'1px'}>
-                <Heading fontSize={'xl'}>{post.title}</Heading>
-                <Text mt={4}>{post.textSnippet}</Text>
-              </Box>
+            data.complains.complains.map((complain) => (
+              <div
+                onClick={() => router.push('/complain/' + complain.id)}
+                key={complain.id}
+                className="
+                w-full
+                mt-4
+                border-2
+                rounded-standard 
+              border-black 
+                p-2
+              "
+              >
+                <h2
+                  className="
+                  text-xl
+                  font-semibold
+                "
+                >
+                  {complain.title}
+                </h2>
+                <p>{complain.descriptionSnippet}</p>
+                <div className="mt-2 flex justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      Ward Number:{' '}
+                      <span className="text-gray-600">{complain.wardNo}</span>
+                    </h3>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      Posted By:{' '}
+                      <span
+                        onClick={() =>
+                          router.push('/profile/' + complain.user.user.id)
+                        }
+                        className="text-gray-600"
+                      >
+                        {complain.user.user.username}
+                      </span>
+                    </h3>
+                  </div>
+                </div>
+              </div>
             ))}
-        </Stack>
-        {data && data.approvedPosts.hasMore ? (
-          <Flex>
-            <Button
-              onClick={() =>
-                fetchMore({
-                  variables: {
-                    limit: variables!.limit,
-                    cursor:
-                      data.approvedPosts.posts[
-                        data.approvedPosts.posts.length - 1
-                      ].createdAt,
-                  },
-                })
-              }
-              m={'auto'}
-            >
-              Load More
-            </Button>
-          </Flex>
-        ) : null}
-      </Wrapper>
-    </div>
-  );
+
+          {data && data.complains.hasMore ? (
+            <div className="flex my-4">
+              <div className="m-auto my-4">
+                <StandardButton
+                  onClick={() =>
+                    fetchMore({
+                      variables: {
+                        limit: variables!.limit,
+                        cursor:
+                          data.complains.complains[
+                            data.complains.complains.length - 1
+                          ].createdAt,
+                      },
+                    })
+                  }
+                >
+                  Load More
+                </StandardButton>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Navbar />
+          Marketing Page
+        </div>
+      );
+    }
+  }
+
+  return <div>Loading ...</div>;
 };
 
 export default withApollo({ ssr: true })(Index);
