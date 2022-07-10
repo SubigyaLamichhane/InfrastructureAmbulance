@@ -1,7 +1,7 @@
 import { withApollo as createWithApollo } from 'next-apollo';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-const client = (ctx) =>
+export const client = (ctx) =>
   new ApolloClient({
     // uri: process.env.GRAPHQL_SERVER as string,
     uri: process.env.NEXT_PUBLIC_API_URL,

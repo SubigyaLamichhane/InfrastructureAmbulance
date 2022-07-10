@@ -14,4 +14,6 @@ export class ComplainInput {
   latitude: number;
   @Field(() => Float)
   longitude: number;
+  @Field()
+  imagePublicId: string;
 }

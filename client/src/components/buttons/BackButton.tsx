@@ -8,6 +8,10 @@ const BackButton: React.FC<NextButtonProps> = ({ children, ...props }) => {
   return (
     <div className="flex justify-end">
       <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+        }}
         className="
           rounded-standard 
           border-2  

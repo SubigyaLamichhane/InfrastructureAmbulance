@@ -107,13 +107,11 @@ let UserResolver = class UserResolver {
     }
     async login(usernameOrNumber, password, { req }) {
         if (!usernameOrNumber) {
-            console.log('ran');
             return {
                 errors: true,
             };
         }
         if (!password) {
-            console.log('ran');
             return {
                 errors: true,
             };
@@ -123,7 +121,6 @@ let UserResolver = class UserResolver {
             user = await User_1.User.findOne({
                 where: { phonenumber: parseInt(usernameOrNumber) },
             });
-            console.log(user);
             if (!user) {
                 return {
                     errors: true,
@@ -132,14 +129,12 @@ let UserResolver = class UserResolver {
         }
         const valid = await argon2_1.default.verify(user.password, password);
         if (valid) {
-            console.log('password');
             req.session.userId = user.id;
             return {
                 errors: false,
                 user: user,
             };
         }
-        console.log('incorrect');
         return {
             errors: true,
         };

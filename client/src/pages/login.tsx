@@ -10,6 +10,7 @@ import Image from 'next/image';
 
 import { Formik, Form } from 'formik';
 import Router from 'next/router';
+import { useApolloClient } from '@apollo/client';
 
 interface LoginProps {}
 
@@ -19,6 +20,7 @@ interface FormValuesType {
 }
 
 const Login: React.FC<LoginProps> = ({}) => {
+  const apolloClient = useApolloClient();
   const [login] = useLoginMutation();
   return (
     <div>
@@ -50,6 +52,7 @@ const Login: React.FC<LoginProps> = ({}) => {
                   },
                 });
                 if (response.data.login.user) {
+                  await apolloClient.resetStore();
                   Router.push('/');
                 } else {
                   setErrors({

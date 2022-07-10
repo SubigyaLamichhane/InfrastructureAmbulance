@@ -125,13 +125,11 @@ export class UserResolver {
     @Ctx() { req }: MyContext
   ) {
     if (!usernameOrNumber) {
-      console.log('ran');
       return {
         errors: true,
       };
     }
     if (!password) {
-      console.log('ran');
       return {
         errors: true,
       };
@@ -141,7 +139,7 @@ export class UserResolver {
       user = await User.findOne({
         where: { phonenumber: parseInt(usernameOrNumber) },
       });
-      console.log(user);
+
       if (!user) {
         return {
           errors: true,
@@ -151,14 +149,13 @@ export class UserResolver {
     const valid = await argon2.verify(user.password, password);
 
     if (valid) {
-      console.log('password');
       req.session.userId = user.id;
       return {
         errors: false,
         user: user,
       };
     }
-    console.log('incorrect');
+
     return {
       errors: true,
     };

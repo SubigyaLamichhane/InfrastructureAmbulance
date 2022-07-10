@@ -7,8 +7,10 @@ query Complain($id: Int!) {
     createdAt
     category
     wardNo
+    imagePublicId
     user {
       user {
+        id
         username
         firstname
         lastname

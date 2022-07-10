@@ -1,24 +1,28 @@
-import { withApollo } from '../utils/withApollo';
-import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import HeaderText from '../components/Base/HeaderText';
 import NextButton from '../components/buttons/NextButton';
 import InputField from '../components/InputField';
+import Map from '../components/Map';
+import Navbar from '../components/Navbar';
+import ImageUploader from 'react-image-upload';
 import {
   ComplainInput,
+  ComplainsByUserDocument,
+  ComplainsDocument,
+  ComplainsQuery,
   useCreateComplainMutation,
-  useLoginMutation,
 } from '../generated/graphql';
-import Navbar from '../components/Navbar';
-import construction from '../assests/Asset 1.png';
-import Image from 'next/image';
+import { client, withApollo } from '../utils/withApollo';
 
-import { Formik, Form } from 'formik';
+import { Form, Formik } from 'formik';
 import Router from 'next/router';
-import Head from 'next/head';
-import Script from 'next/script';
+import { Provider } from 'react-redux';
 import SelectCategory from '../components/SelectCategory';
 import SelectWard from '../components/SelectWard';
 import TextArea from '../components/TextArea';
+import { store } from '../store/store';
+import { Image, CloudinaryContext } from 'cloudinary-react';
 
 interface CreateComplainProps {}
 
@@ -29,88 +33,45 @@ interface FormValuesType {
   wardNo: 'Ward No.' | number;
 }
 
-interface AtlasWindow extends Window {
-  atlas: any;
-}
-
-declare let window: AtlasWindow;
-
-let latitude: number = 85.32767705161245;
-let longitude: number = 27.705308474955412;
-
-function GetMap() {
-  //Initialize a map instance.
-  let map: any;
-  const atlas = window.atlas;
-  map = new atlas.Map('myMap', {
-    center: [85.32767705161245, 27.705308474955412],
-    zoom: 13,
-    view: 'Auto',
-    style: 'satellite',
-    showLogo: false,
-    showFeedbackLink: false,
-    //Add your Azure Maps key to the map SDK. Get an Azure Maps key at https://azure.com/maps. NOTE: The primary key should be used as the key.
-    authOptions: {
-      authType: 'subscriptionKey',
-      subscriptionKey: 'Wsh5kbtxkT8Poz2ojh8uCMRLvZSMrp1MOP-VOdULq90',
-    },
-  });
-
-  //Wait until the map resources are ready.
-  map.events.add('ready', function () {
-    //Create a marker and add it to the map.
-    if (document.querySelector('.azure-map-copyright')) {
-      //@ts-ignore
-      document.querySelector('.azure-map-copyright').style.display = 'none';
-    }
-    let marker = new atlas.HtmlMarker({
-      position: [85.32767705161245, 27.705308474955412],
-    });
-    map.markers.add(marker);
-
-    //When the map is clicked, animate the marker to the new position.
-    map.events.add('click', function (e: any) {
-      map.markers.remove(marker);
-      marker = new atlas.HtmlMarker({
-        position: e.position,
-      });
-      longitude = e.position[0];
-      latitude = e.position[1];
-      console.log(longitude, latitude);
-      map.markers.add(marker);
-    });
-  });
+interface CloudinaryResponse {
+  public_id: string;
+  height: number;
+  url: string;
+  placeholder: string | false;
+  original_filename: string;
 }
 
 const CreateComplain: React.FC<CreateComplainProps> = ({}) => {
   const [createComplain] = useCreateComplainMutation();
+  const [imagePublicId, setImagePublicId] = useState('');
+  const [imageSelected, setImageSelected] = useState<FileList[0]>();
+  const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append('file', imageSelected);
+    formData.append('upload_preset', 'lntrqgee');
+    const response: { data: CloudinaryResponse } = await axios.post(
+      'https://api.cloudinary.com/v1_1/infrastructure-ambulance/image/upload',
+      formData
+    );
+
+    setImagePublicId(response.data.public_id);
+  };
+
+  const [latitudeAndLongitude, setLatitudeAndLongitude] = useState<{
+    latitude: number | null;
+    longitude: number | null;
+  }>({
+    latitude: null,
+    longitude: null,
+  });
+
   return (
     <div>
-      <Head>
-        <link
-          rel="stylesheet"
-          href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css"
-          type="text/css"
-        />
-      </Head>
-      <Script
-        onLoad={GetMap}
-        type="text/javascript"
-        src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"
-      ></Script>
       <Navbar />
       <HeaderText>Report a problem</HeaderText>
-      <div className="flex justify-between ">
-        <div className="h-3/6 w-3/6 md:ml-10">
-          <div
-            id="myMap"
-            style={{
-              width: '500px',
-              height: '500px',
-            }}
-          ></div>
-        </div>
-        <div className="w-full md:w-3/6">
+      <div className="flex justify-between mt-4">
+        <Map></Map>
+        <div className="w-full md:w-3/6 ml-10">
           <Formik
             initialValues={
               {
@@ -138,20 +99,70 @@ const CreateComplain: React.FC<CreateComplainProps> = ({}) => {
                 setErrors({
                   wardNo: 'Please enter the Ward No.',
                 });
+                //@ts-ignore
+              } else if (!window.latitude && !window.longitude) {
+                setErrors({
+                  description: 'Please enter the location on the map',
+                });
+              } else if (!imagePublicId) {
+                setErrors({
+                  description: 'Select at least one image',
+                });
               } else {
                 const response = await createComplain({
                   variables: {
                     input: {
                       category: values.category,
                       description: values.description,
-                      latitude,
-                      longitude,
+                      //@ts-ignore
+                      latitude: window.latitude,
+                      //@ts-ignore
+                      longitude: window.longitude,
                       title: values.title,
                       wardNo: parseInt(values.wardNo.toString()),
+                      imagePublicId,
                     } as ComplainInput,
                   },
+                  update: (store, { data }) => {
+                    // const complainsData = store.readQuery<ComplainsQuery>({
+                    //   query: ComplainsDocument,
+                    // });
+                    let complainsData = store.readQuery<ComplainsQuery>({
+                      query: ComplainsDocument,
+                      variables: {
+                        limit: 15,
+                        cursor: null,
+                      },
+                    });
+
+                    if (complainsData) {
+                      store.writeQuery<ComplainsQuery>({
+                        query: ComplainsDocument,
+                        data: {
+                          complains: {
+                            ...complainsData.complains,
+                            complains: [
+                              data.createComplain,
+                              ...complainsData.complains.complains,
+                            ],
+                          },
+                        },
+                        variables: {
+                          limit: 15,
+                          cursor: null,
+                        },
+                      });
+                      complainsData = store.readQuery<ComplainsQuery>({
+                        query: ComplainsDocument,
+                        variables: {
+                          limit: 15,
+                          cursor: null,
+                        },
+                      });
+                      console.log(complainsData);
+                    }
+                  },
                 });
-                console.log(response);
                 if (response.data.createComplain.id) {
                   Router.push('/');
                 } else {
@@ -190,6 +201,34 @@ const CreateComplain: React.FC<CreateComplainProps> = ({}) => {
                         label="Description"
                         placeholder="Enter Description..."
                       />
+                      <div>
+                        <label id="file_uploader">
+                          <input
+                            type="file"
+                            name="upload"
+                            onChange={(e) =>
+                              setImageSelected(e.target.files[0])
+                            }
+                            accept="image/*"
+                            id="file_uploader"
+                            placeholder="Pictures can help us identify issues"
+                          ></input>
+                          <button type="button" onClick={uploadImage}>
+                            Upload Image
+                          </button>
+                        </label>
+                        <CloudinaryContext cloudName="infrastructure-ambulance">
+                          <div>
+                            {imagePublicId && (
+                              <Image
+                                publicId={imagePublicId}
+                                width="100"
+                                alt="complain-picture"
+                              />
+                            )}
+                          </div>
+                        </CloudinaryContext>
+                      </div>
                       <NextButton>Submit</NextButton>
                     </div>
                   </div>
@@ -203,4 +242,12 @@ const CreateComplain: React.FC<CreateComplainProps> = ({}) => {
   );
 };
 
-export default withApollo({ ssr: false })(CreateComplain);
+const WithProvider: React.FC<CreateComplainProps> = ({}) => {
+  return (
+    <Provider store={store}>
+      <CreateComplain />
+    </Provider>
+  );
+};
+
+export default withApollo({ ssr: false })(WithProvider);

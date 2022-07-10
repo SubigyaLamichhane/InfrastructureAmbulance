@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Button, Flex, Link } from '@chakra-ui/react';
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { isServer } from '../utils/isServer';
 import { useApolloClient } from '@apollo/client';
 import BalenChasma from '../assests/Asset 2.png';
@@ -19,6 +18,12 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
   const { data, loading } = useMeQuery({
     skip: isServer(),
   });
+
+  const onLogout = async () => {
+    await logout({});
+    await apolloClient.resetStore();
+    router.push('/');
+  };
 
   let buttons: any = null;
 
@@ -42,17 +47,7 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
             <LinkButton href="/create-complain">Create Complain</LinkButton>
           </div>
           <div>
-            <LinkButton
-              onClick={() => {
-                async () => {
-                  await logout();
-                  await apolloClient.resetStore();
-                };
-              }}
-              href="/"
-            >
-              Logout
-            </LinkButton>
+            <StandardButton onClick={onLogout}>Logout</StandardButton>
           </div>
         </div>
       </div>
@@ -61,18 +56,20 @@ const Navbar: React.FC<NavbarProps> = ({}) => {
 
   return (
     <div className="flex my-6 justify-between items-center">
-      <div className="flex items-center">
-        <div className="">
-          <Image src={BalenChasma} alt="Logo" />
+      <Link href="/">
+        <div className="flex items-center">
+          <div className="">
+            <Image src={BalenChasma} alt="Logo" />
+          </div>
+          <div className="">
+            <h1 className="ml-3 text-2xl">
+              Infrastructure
+              <br />
+              Ambulance
+            </h1>
+          </div>
         </div>
-        <div className="">
-          <h1 className="ml-3 text-2xl">
-            Infrastructure
-            <br />
-            Ambulance
-          </h1>
-        </div>
-      </div>
+      </Link>
       {buttons}
     </div>
   );

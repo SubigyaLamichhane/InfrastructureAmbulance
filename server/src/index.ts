@@ -34,8 +34,9 @@ const main = async () => {
 
   let RedisStore = connectRedis(session);
   let redis = new Redis({
-    host: process.env.REDIS_URL,
-    port: 12967,
+    // host: process.env.REDIS_URL,
+    // port: 12967,
+    host: '127.0.0.1:6379',
     username: 'default',
     password: process.env.REDIS_PASSWORD,
   });

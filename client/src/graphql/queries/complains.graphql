@@ -5,7 +5,11 @@ query Complains($limit: Int!, $cursor: String) {
       descriptionSnippet
       title
       createdAt
+      latitude
+      longitude
       wardNo
+      latitude
+      imagePublicId
       user {
         user {
           id

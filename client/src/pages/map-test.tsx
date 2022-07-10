@@ -22,7 +22,7 @@ function GetMap() {
     //Add your Azure Maps key to the map SDK. Get an Azure Maps key at https://azure.com/maps. NOTE: The primary key should be used as the key.
     authOptions: {
       authType: 'subscriptionKey',
-      subscriptionKey: 'Wsh5kbtxkT8Poz2ojh8uCMRLvZSMrp1MOP-VOdULq90',
+      subscriptionKey: process.env.NEXT_PUBLIC_AZURE_KEY,
     },
   });
 

@@ -22,8 +22,7 @@ const main = async () => {
     const app = (0, express_1.default)();
     let RedisStore = (0, connect_redis_1.default)(express_session_1.default);
     let redis = new ioredis_1.default({
-        host: process.env.REDIS_URL,
-        port: 12967,
+        host: '127.0.0.1:6379',
         username: 'default',
         password: process.env.REDIS_PASSWORD,
     });

@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import construction from '../../assests/Asset 1.png';
 import Navbar from '../../components/Navbar';
 import { withApollo } from '../../utils/withApollo';
-import PhoneNumberEntry from './register-components/PhoneNumberEntry';
-import RegisterMain from './register-components/RegisterMain';
-import UsernameEntry from './register-components/UsernameEntry';
-import VerifyNumber from './register-components/VerifyNumber';
+import PhoneNumberEntry from '../../components/register-components/PhoneNumberEntry';
+import RegisterMain from '../../components/register-components/RegisterMain';
+import UsernameEntry from '../../components/register-components/UsernameEntry';
+import VerifyNumber from '../../components/register-components/VerifyNumber';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
 
@@ -73,7 +73,7 @@ const Index: React.FC<IndexProps> = ({}) => {
       <Navbar />
       <div className="flex justify-between">
         <div className="w-full md:w-3/6">{selectPage(page, setPage)}</div>
-        <div className="h-3/6 w-3/6 md:ml-10 hidden md:inline">
+        <div className="h-3/6 w-3/6 md:ml-10 md:inline">
           <Image src={construction} alt="construction svg"></Image>
         </div>
       </div>

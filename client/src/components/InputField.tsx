@@ -16,6 +16,11 @@ const InputField: React.FC<InputFieldProps> = ({ size: _, ...props }) => {
     <div className="w-full">
       <h2 className="text-xl">{props.label}</h2>
       <input
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        }}
         className="
         border-2
         rounded-standard 

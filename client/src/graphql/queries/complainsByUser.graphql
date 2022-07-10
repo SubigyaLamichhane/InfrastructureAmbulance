@@ -6,6 +6,7 @@ query ComplainsByUser($limit: Int!, $userId: Int!, $cursor: String) {
       descriptionSnippet
       title
       createdAt
+      imagePublicId
     }
     hasMore
   }

@@ -56,4 +56,8 @@ export class Complain extends BaseEntity {
   @Field()
   @Column()
   creatorId!: number;
+
+  @Field()
+  @Column()
+  imagePublicId: string;
 }

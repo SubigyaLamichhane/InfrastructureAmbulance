@@ -2,9 +2,15 @@ import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -26,6 +32,7 @@ export type Complain = {
   description: Scalars['String'];
   descriptionSnippet: Scalars['String'];
   id: Scalars['Int'];
+  imagePublicId: Scalars['String'];
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
   title: Scalars['String'];
@@ -37,6 +44,7 @@ export type Complain = {
 export type ComplainInput = {
   category: Scalars['String'];
   description: Scalars['String'];
+  imagePublicId: Scalars['String'];
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
   title: Scalars['String'];
@@ -62,42 +70,34 @@ export type Mutation = {
   updateComplain?: Maybe<Complain>;
 };
 
-
 export type MutationCreateComplainArgs = {
   input: ComplainInput;
 };
-
 
 export type MutationDeleteComplainArgs = {
   id: Scalars['Float'];
 };
 
-
 export type MutationDoesEmailExistArgs = {
   email: Scalars['String'];
 };
-
 
 export type MutationDoesPhoneNumberExistArgs = {
   phonenumber: Scalars['Long'];
 };
 
-
 export type MutationDoesUsernameExistArgs = {
   username: Scalars['String'];
 };
-
 
 export type MutationLoginArgs = {
   password: Scalars['String'];
   usernameOrNumber: Scalars['String'];
 };
 
-
 export type MutationRegisterArgs = {
   input: UserInput;
 };
-
 
 export type MutationUpdateComplainArgs = {
   id: Scalars['Int'];
@@ -119,11 +119,9 @@ export type Query = {
   user?: Maybe<UserResponse>;
 };
 
-
 export type QueryComplainArgs = {
   id: Scalars['Int'];
 };
-
 
 export type QueryComplainsArgs = {
   cursor?: InputMaybe<Scalars['String']>;
@@ -131,13 +129,11 @@ export type QueryComplainsArgs = {
   wardNo?: InputMaybe<Scalars['Int']>;
 };
 
-
 export type QueryComplainsByUserArgs = {
   cursor?: InputMaybe<Scalars['String']>;
   limit: Scalars['Int'];
   userId: Scalars['Int'];
 };
-
 
 export type QueryUserArgs = {
   id: Scalars['Int'];
@@ -178,64 +174,151 @@ export type CreateComplainMutationVariables = Exact<{
   input: ComplainInput;
 }>;
 
-
-export type CreateComplainMutation = { __typename?: 'Mutation', createComplain: { __typename?: 'Complain', id: number, title: string, descriptionSnippet: string } };
+export type CreateComplainMutation = {
+  __typename?: 'Mutation';
+  createComplain: {
+    __typename?: 'Complain';
+    id: number;
+    descriptionSnippet: string;
+    title: string;
+    createdAt: string;
+    latitude: number;
+    longitude: number;
+    wardNo: number;
+    imagePublicId: string;
+    user: {
+      __typename?: 'CreatorUserResponse';
+      user?: { __typename?: 'User'; id: number; username: string } | null;
+    };
+  };
+};
 
 export type DoesEmailExistMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
 
-
-export type DoesEmailExistMutation = { __typename?: 'Mutation', doesEmailExist: boolean };
+export type DoesEmailExistMutation = {
+  __typename?: 'Mutation';
+  doesEmailExist: boolean;
+};
 
 export type DoesPhoneNumberExistMutationVariables = Exact<{
   phonenumber: Scalars['Long'];
 }>;
 
-
-export type DoesPhoneNumberExistMutation = { __typename?: 'Mutation', doesPhoneNumberExist: boolean };
+export type DoesPhoneNumberExistMutation = {
+  __typename?: 'Mutation';
+  doesPhoneNumberExist: boolean;
+};
 
 export type DoesUsernameExistMutationVariables = Exact<{
   username: Scalars['String'];
 }>;
 
-
-export type DoesUsernameExistMutation = { __typename?: 'Mutation', doesUsernameExist: boolean };
+export type DoesUsernameExistMutation = {
+  __typename?: 'Mutation';
+  doesUsernameExist: boolean;
+};
 
 export type LoginMutationVariables = Exact<{
   usernameOrNumber: Scalars['String'];
   password: Scalars['String'];
 }>;
 
+export type LoginMutation = {
+  __typename?: 'Mutation';
+  login: {
+    __typename?: 'UserResponse';
+    errors?: boolean | null;
+    user?: {
+      __typename?: 'User';
+      id: number;
+      username: string;
+      isAdmin: boolean;
+    } | null;
+  };
+};
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: boolean | null, user?: { __typename?: 'User', id: number, username: string, isAdmin: boolean } | null } };
+export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean };
 
 export type RegisterMutationVariables = Exact<{
   input: UserInput;
 }>;
 
-
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: boolean | null, user?: { __typename?: 'User', id: number, username: string, isAdmin: boolean } | null } };
+export type RegisterMutation = {
+  __typename?: 'Mutation';
+  register: {
+    __typename?: 'UserResponse';
+    errors?: boolean | null;
+    user?: {
+      __typename?: 'User';
+      id: number;
+      username: string;
+      isAdmin: boolean;
+    } | null;
+  };
+};
 
 export type ComplainQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-
-export type ComplainQuery = { __typename?: 'Query', complain?: { __typename?: 'Complain', title: string, description: string, latitude: number, longitude: number, createdAt: string, category: string, wardNo: number, user: { __typename?: 'CreatorUserResponse', user?: { __typename?: 'User', username: string, firstname: string, lastname: string, phonenumber: any, email: string } | null } } | null };
+export type ComplainQuery = {
+  __typename?: 'Query';
+  complain?: {
+    __typename?: 'Complain';
+    title: string;
+    description: string;
+    latitude: number;
+    longitude: number;
+    createdAt: string;
+    category: string;
+    wardNo: number;
+    imagePublicId: string;
+    user: {
+      __typename?: 'CreatorUserResponse';
+      user?: {
+        __typename?: 'User';
+        id: number;
+        username: string;
+        firstname: string;
+        lastname: string;
+        phonenumber: any;
+        email: string;
+      } | null;
+    };
+  } | null;
+};
 
 export type ComplainsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
 }>;
 
-
-export type ComplainsQuery = { __typename?: 'Query', complains: { __typename?: 'PaginatedComplains', hasMore: boolean, complains: Array<{ __typename?: 'Complain', id: number, descriptionSnippet: string, title: string, createdAt: string, wardNo: number, user: { __typename?: 'CreatorUserResponse', user?: { __typename?: 'User', id: number, username: string } | null } }> } };
+export type ComplainsQuery = {
+  __typename?: 'Query';
+  complains: {
+    __typename?: 'PaginatedComplains';
+    hasMore: boolean;
+    complains: Array<{
+      __typename?: 'Complain';
+      id: number;
+      descriptionSnippet: string;
+      title: string;
+      createdAt: string;
+      latitude: number;
+      longitude: number;
+      wardNo: number;
+      imagePublicId: string;
+      user: {
+        __typename?: 'CreatorUserResponse';
+        user?: { __typename?: 'User'; id: number; username: string } | null;
+      };
+    }>;
+  };
+};
 
 export type ComplainsByUserQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -243,32 +326,77 @@ export type ComplainsByUserQueryVariables = Exact<{
   cursor?: InputMaybe<Scalars['String']>;
 }>;
 
+export type ComplainsByUserQuery = {
+  __typename?: 'Query';
+  complainsByUser: {
+    __typename?: 'PaginatedComplains';
+    hasMore: boolean;
+    complains: Array<{
+      __typename?: 'Complain';
+      id: number;
+      wardNo: number;
+      descriptionSnippet: string;
+      title: string;
+      createdAt: string;
+      imagePublicId: string;
+    }>;
+  };
+};
 
-export type ComplainsByUserQuery = { __typename?: 'Query', complainsByUser: { __typename?: 'PaginatedComplains', hasMore: boolean, complains: Array<{ __typename?: 'Complain', id: number, wardNo: number, descriptionSnippet: string, title: string, createdAt: string }> } };
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, isAdmin: boolean } | null };
+export type MeQuery = {
+  __typename?: 'Query';
+  me?: { __typename?: 'User'; id: number; isAdmin: boolean } | null;
+};
 
 export type UserQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
 
-
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'UserResponse', errors?: boolean | null, user?: { __typename?: 'User', id: number, username: string, firstname: string, lastname: string, email: string, phonenumber: any, wardNo: number } | null } | null };
-
+export type UserQuery = {
+  __typename?: 'Query';
+  user?: {
+    __typename?: 'UserResponse';
+    errors?: boolean | null;
+    user?: {
+      __typename?: 'User';
+      id: number;
+      username: string;
+      firstname: string;
+      lastname: string;
+      email: string;
+      phonenumber: any;
+      wardNo: number;
+    } | null;
+  } | null;
+};
 
 export const CreateComplainDocument = gql`
-    mutation CreateComplain($input: ComplainInput!) {
-  createComplain(input: $input) {
-    id
-    title
-    descriptionSnippet
+  mutation CreateComplain($input: ComplainInput!) {
+    createComplain(input: $input) {
+      id
+      descriptionSnippet
+      title
+      createdAt
+      latitude
+      longitude
+      wardNo
+      latitude
+      imagePublicId
+      user {
+        user {
+          id
+          username
+        }
+      }
+    }
   }
-}
-    `;
-export type CreateComplainMutationFn = Apollo.MutationFunction<CreateComplainMutation, CreateComplainMutationVariables>;
+`;
+export type CreateComplainMutationFn = Apollo.MutationFunction<
+  CreateComplainMutation,
+  CreateComplainMutationVariables
+>;
 
 /**
  * __useCreateComplainMutation__
@@ -287,19 +415,36 @@ export type CreateComplainMutationFn = Apollo.MutationFunction<CreateComplainMut
  *   },
  * });
  */
-export function useCreateComplainMutation(baseOptions?: Apollo.MutationHookOptions<CreateComplainMutation, CreateComplainMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateComplainMutation, CreateComplainMutationVariables>(CreateComplainDocument, options);
-      }
-export type CreateComplainMutationHookResult = ReturnType<typeof useCreateComplainMutation>;
-export type CreateComplainMutationResult = Apollo.MutationResult<CreateComplainMutation>;
-export type CreateComplainMutationOptions = Apollo.BaseMutationOptions<CreateComplainMutation, CreateComplainMutationVariables>;
-export const DoesEmailExistDocument = gql`
-    mutation DoesEmailExist($email: String!) {
-  doesEmailExist(email: $email)
+export function useCreateComplainMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateComplainMutation,
+    CreateComplainMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateComplainMutation,
+    CreateComplainMutationVariables
+  >(CreateComplainDocument, options);
 }
-    `;
-export type DoesEmailExistMutationFn = Apollo.MutationFunction<DoesEmailExistMutation, DoesEmailExistMutationVariables>;
+export type CreateComplainMutationHookResult = ReturnType<
+  typeof useCreateComplainMutation
+>;
+export type CreateComplainMutationResult =
+  Apollo.MutationResult<CreateComplainMutation>;
+export type CreateComplainMutationOptions = Apollo.BaseMutationOptions<
+  CreateComplainMutation,
+  CreateComplainMutationVariables
+>;
+export const DoesEmailExistDocument = gql`
+  mutation DoesEmailExist($email: String!) {
+    doesEmailExist(email: $email)
+  }
+`;
+export type DoesEmailExistMutationFn = Apollo.MutationFunction<
+  DoesEmailExistMutation,
+  DoesEmailExistMutationVariables
+>;
 
 /**
  * __useDoesEmailExistMutation__
@@ -318,19 +463,36 @@ export type DoesEmailExistMutationFn = Apollo.MutationFunction<DoesEmailExistMut
  *   },
  * });
  */
-export function useDoesEmailExistMutation(baseOptions?: Apollo.MutationHookOptions<DoesEmailExistMutation, DoesEmailExistMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DoesEmailExistMutation, DoesEmailExistMutationVariables>(DoesEmailExistDocument, options);
-      }
-export type DoesEmailExistMutationHookResult = ReturnType<typeof useDoesEmailExistMutation>;
-export type DoesEmailExistMutationResult = Apollo.MutationResult<DoesEmailExistMutation>;
-export type DoesEmailExistMutationOptions = Apollo.BaseMutationOptions<DoesEmailExistMutation, DoesEmailExistMutationVariables>;
-export const DoesPhoneNumberExistDocument = gql`
-    mutation DoesPhoneNumberExist($phonenumber: Long!) {
-  doesPhoneNumberExist(phonenumber: $phonenumber)
+export function useDoesEmailExistMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DoesEmailExistMutation,
+    DoesEmailExistMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DoesEmailExistMutation,
+    DoesEmailExistMutationVariables
+  >(DoesEmailExistDocument, options);
 }
-    `;
-export type DoesPhoneNumberExistMutationFn = Apollo.MutationFunction<DoesPhoneNumberExistMutation, DoesPhoneNumberExistMutationVariables>;
+export type DoesEmailExistMutationHookResult = ReturnType<
+  typeof useDoesEmailExistMutation
+>;
+export type DoesEmailExistMutationResult =
+  Apollo.MutationResult<DoesEmailExistMutation>;
+export type DoesEmailExistMutationOptions = Apollo.BaseMutationOptions<
+  DoesEmailExistMutation,
+  DoesEmailExistMutationVariables
+>;
+export const DoesPhoneNumberExistDocument = gql`
+  mutation DoesPhoneNumberExist($phonenumber: Long!) {
+    doesPhoneNumberExist(phonenumber: $phonenumber)
+  }
+`;
+export type DoesPhoneNumberExistMutationFn = Apollo.MutationFunction<
+  DoesPhoneNumberExistMutation,
+  DoesPhoneNumberExistMutationVariables
+>;
 
 /**
  * __useDoesPhoneNumberExistMutation__
@@ -349,25 +511,42 @@ export type DoesPhoneNumberExistMutationFn = Apollo.MutationFunction<DoesPhoneNu
  *   },
  * });
  */
-export function useDoesPhoneNumberExistMutation(baseOptions?: Apollo.MutationHookOptions<DoesPhoneNumberExistMutation, DoesPhoneNumberExistMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DoesPhoneNumberExistMutation, DoesPhoneNumberExistMutationVariables>(DoesPhoneNumberExistDocument, options);
-      }
-export type DoesPhoneNumberExistMutationHookResult = ReturnType<typeof useDoesPhoneNumberExistMutation>;
-export type DoesPhoneNumberExistMutationResult = Apollo.MutationResult<DoesPhoneNumberExistMutation>;
-export type DoesPhoneNumberExistMutationOptions = Apollo.BaseMutationOptions<DoesPhoneNumberExistMutation, DoesPhoneNumberExistMutationVariables>;
-export const DoesUsernameExistDocument = gql`
-    mutation DoesUsernameExist($username: String!) {
-  doesUsernameExist(username: $username)
+export function useDoesPhoneNumberExistMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DoesPhoneNumberExistMutation,
+    DoesPhoneNumberExistMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DoesPhoneNumberExistMutation,
+    DoesPhoneNumberExistMutationVariables
+  >(DoesPhoneNumberExistDocument, options);
 }
-    `;
-export type DoesUsernameExistMutationFn = Apollo.MutationFunction<DoesUsernameExistMutation, DoesUsernameExistMutationVariables>;
+export type DoesPhoneNumberExistMutationHookResult = ReturnType<
+  typeof useDoesPhoneNumberExistMutation
+>;
+export type DoesPhoneNumberExistMutationResult =
+  Apollo.MutationResult<DoesPhoneNumberExistMutation>;
+export type DoesPhoneNumberExistMutationOptions = Apollo.BaseMutationOptions<
+  DoesPhoneNumberExistMutation,
+  DoesPhoneNumberExistMutationVariables
+>;
+export const DoesUsernameExistDocument = gql`
+  mutation DoesUsernameExist($username: String!) {
+    doesUsernameExist(username: $username)
+  }
+`;
+export type DoesUsernameExistMutationFn = Apollo.MutationFunction<
+  DoesUsernameExistMutation,
+  DoesUsernameExistMutationVariables
+>;
 
 /**
  * __useDoesUsernameExistMutation__
  *
  * To run a mutation, you first call `useDoesUsernameExistMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDoesUsernameExistMutation` returns a tuple that includes:
+ * When your component renders, `useDoesUsernameExissstMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
@@ -380,26 +559,43 @@ export type DoesUsernameExistMutationFn = Apollo.MutationFunction<DoesUsernameEx
  *   },
  * });
  */
-export function useDoesUsernameExistMutation(baseOptions?: Apollo.MutationHookOptions<DoesUsernameExistMutation, DoesUsernameExistMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DoesUsernameExistMutation, DoesUsernameExistMutationVariables>(DoesUsernameExistDocument, options);
-      }
-export type DoesUsernameExistMutationHookResult = ReturnType<typeof useDoesUsernameExistMutation>;
-export type DoesUsernameExistMutationResult = Apollo.MutationResult<DoesUsernameExistMutation>;
-export type DoesUsernameExistMutationOptions = Apollo.BaseMutationOptions<DoesUsernameExistMutation, DoesUsernameExistMutationVariables>;
+export function useDoesUsernameExistMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DoesUsernameExistMutation,
+    DoesUsernameExistMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DoesUsernameExistMutation,
+    DoesUsernameExistMutationVariables
+  >(DoesUsernameExistDocument, options);
+}
+export type DoesUsernameExistMutationHookResult = ReturnType<
+  typeof useDoesUsernameExistMutation
+>;
+export type DoesUsernameExistMutationResult =
+  Apollo.MutationResult<DoesUsernameExistMutation>;
+export type DoesUsernameExistMutationOptions = Apollo.BaseMutationOptions<
+  DoesUsernameExistMutation,
+  DoesUsernameExistMutationVariables
+>;
 export const LoginDocument = gql`
-    mutation Login($usernameOrNumber: String!, $password: String!) {
-  login(usernameOrNumber: $usernameOrNumber, password: $password) {
-    errors
-    user {
-      id
-      username
-      isAdmin
+  mutation Login($usernameOrNumber: String!, $password: String!) {
+    login(usernameOrNumber: $usernameOrNumber, password: $password) {
+      errors
+      user {
+        id
+        username
+        isAdmin
+      }
     }
   }
-}
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+`;
+export type LoginMutationFn = Apollo.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>;
 
 /**
  * __useLoginMutation__
@@ -419,19 +615,33 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   },
  * });
  */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
+export function useLoginMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    options
+  );
+}
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>;
 export const LogoutDocument = gql`
-    mutation Logout {
-  logout
-}
-    `;
-export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+  mutation Logout {
+    logout
+  }
+`;
+export type LogoutMutationFn = Apollo.MutationFunction<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
 
 /**
  * __useLogoutMutation__
@@ -449,26 +659,40 @@ export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMut
  *   },
  * });
  */
-export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
-      }
+export function useLogoutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    LogoutMutation,
+    LogoutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(
+    LogoutDocument,
+    options
+  );
+}
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
-export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
 export const RegisterDocument = gql`
-    mutation Register($input: UserInput!) {
-  register(input: $input) {
-    errors
-    user {
-      id
-      username
-      isAdmin
+  mutation Register($input: UserInput!) {
+    register(input: $input) {
+      errors
+      user {
+        id
+        username
+        isAdmin
+      }
     }
   }
-}
-    `;
-export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+`;
+export type RegisterMutationFn = Apollo.MutationFunction<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
 
 /**
  * __useRegisterMutation__
@@ -487,35 +711,48 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  *   },
  * });
  */
-export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
-      }
+export function useRegisterMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RegisterMutation,
+    RegisterMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(
+    RegisterDocument,
+    options
+  );
+}
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
 export const ComplainDocument = gql`
-    query Complain($id: Int!) {
-  complain(id: $id) {
-    title
-    description
-    latitude
-    longitude
-    createdAt
-    category
-    wardNo
-    user {
+  query Complain($id: Int!) {
+    complain(id: $id) {
+      title
+      description
+      latitude
+      longitude
+      createdAt
+      category
+      wardNo
+      imagePublicId
       user {
-        username
-        firstname
-        lastname
-        phonenumber
-        email
+        user {
+          id
+          username
+          firstname
+          lastname
+          phonenumber
+          email
+        }
       }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useComplainQuery__
@@ -533,37 +770,59 @@ export const ComplainDocument = gql`
  *   },
  * });
  */
-export function useComplainQuery(baseOptions: Apollo.QueryHookOptions<ComplainQuery, ComplainQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ComplainQuery, ComplainQueryVariables>(ComplainDocument, options);
-      }
-export function useComplainLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ComplainQuery, ComplainQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ComplainQuery, ComplainQueryVariables>(ComplainDocument, options);
-        }
-export type ComplainQueryHookResult = ReturnType<typeof useComplainQuery>;
-export type ComplainLazyQueryHookResult = ReturnType<typeof useComplainLazyQuery>;
-export type ComplainQueryResult = Apollo.QueryResult<ComplainQuery, ComplainQueryVariables>;
-export const ComplainsDocument = gql`
-    query Complains($limit: Int!, $cursor: String) {
-  complains(limit: $limit, cursor: $cursor) {
-    complains {
-      id
-      descriptionSnippet
-      title
-      createdAt
-      wardNo
-      user {
-        user {
-          id
-          username
-        }
-      }
-    }
-    hasMore
-  }
+export function useComplainQuery(
+  baseOptions: Apollo.QueryHookOptions<ComplainQuery, ComplainQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ComplainQuery, ComplainQueryVariables>(
+    ComplainDocument,
+    options
+  );
 }
-    `;
+export function useComplainLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ComplainQuery,
+    ComplainQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ComplainQuery, ComplainQueryVariables>(
+    ComplainDocument,
+    options
+  );
+}
+export type ComplainQueryHookResult = ReturnType<typeof useComplainQuery>;
+export type ComplainLazyQueryHookResult = ReturnType<
+  typeof useComplainLazyQuery
+>;
+export type ComplainQueryResult = Apollo.QueryResult<
+  ComplainQuery,
+  ComplainQueryVariables
+>;
+export const ComplainsDocument = gql`
+  query Complains($limit: Int!, $cursor: String) {
+    complains(limit: $limit, cursor: $cursor) {
+      complains {
+        id
+        descriptionSnippet
+        title
+        createdAt
+        latitude
+        longitude
+        wardNo
+        latitude
+        imagePublicId
+        user {
+          user {
+            id
+            username
+          }
+        }
+      }
+      hasMore
+    }
+  }
+`;
 
 /**
  * __useComplainsQuery__
@@ -582,31 +841,50 @@ export const ComplainsDocument = gql`
  *   },
  * });
  */
-export function useComplainsQuery(baseOptions: Apollo.QueryHookOptions<ComplainsQuery, ComplainsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ComplainsQuery, ComplainsQueryVariables>(ComplainsDocument, options);
-      }
-export function useComplainsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ComplainsQuery, ComplainsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ComplainsQuery, ComplainsQueryVariables>(ComplainsDocument, options);
-        }
-export type ComplainsQueryHookResult = ReturnType<typeof useComplainsQuery>;
-export type ComplainsLazyQueryHookResult = ReturnType<typeof useComplainsLazyQuery>;
-export type ComplainsQueryResult = Apollo.QueryResult<ComplainsQuery, ComplainsQueryVariables>;
-export const ComplainsByUserDocument = gql`
-    query ComplainsByUser($limit: Int!, $userId: Int!, $cursor: String) {
-  complainsByUser(limit: $limit, userId: $userId, cursor: $cursor) {
-    complains {
-      id
-      wardNo
-      descriptionSnippet
-      title
-      createdAt
-    }
-    hasMore
-  }
+export function useComplainsQuery(
+  baseOptions: Apollo.QueryHookOptions<ComplainsQuery, ComplainsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ComplainsQuery, ComplainsQueryVariables>(
+    ComplainsDocument,
+    options
+  );
 }
-    `;
+export function useComplainsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ComplainsQuery,
+    ComplainsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ComplainsQuery, ComplainsQueryVariables>(
+    ComplainsDocument,
+    options
+  );
+}
+export type ComplainsQueryHookResult = ReturnType<typeof useComplainsQuery>;
+export type ComplainsLazyQueryHookResult = ReturnType<
+  typeof useComplainsLazyQuery
+>;
+export type ComplainsQueryResult = Apollo.QueryResult<
+  ComplainsQuery,
+  ComplainsQueryVariables
+>;
+export const ComplainsByUserDocument = gql`
+  query ComplainsByUser($limit: Int!, $userId: Int!, $cursor: String) {
+    complainsByUser(limit: $limit, userId: $userId, cursor: $cursor) {
+      complains {
+        id
+        wardNo
+        descriptionSnippet
+        title
+        createdAt
+        imagePublicId
+      }
+      hasMore
+    }
+  }
+`;
 
 /**
  * __useComplainsByUserQuery__
@@ -626,25 +904,48 @@ export const ComplainsByUserDocument = gql`
  *   },
  * });
  */
-export function useComplainsByUserQuery(baseOptions: Apollo.QueryHookOptions<ComplainsByUserQuery, ComplainsByUserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ComplainsByUserQuery, ComplainsByUserQueryVariables>(ComplainsByUserDocument, options);
-      }
-export function useComplainsByUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ComplainsByUserQuery, ComplainsByUserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ComplainsByUserQuery, ComplainsByUserQueryVariables>(ComplainsByUserDocument, options);
-        }
-export type ComplainsByUserQueryHookResult = ReturnType<typeof useComplainsByUserQuery>;
-export type ComplainsByUserLazyQueryHookResult = ReturnType<typeof useComplainsByUserLazyQuery>;
-export type ComplainsByUserQueryResult = Apollo.QueryResult<ComplainsByUserQuery, ComplainsByUserQueryVariables>;
-export const MeDocument = gql`
-    query Me {
-  me {
-    id
-    isAdmin
-  }
+export function useComplainsByUserQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ComplainsByUserQuery,
+    ComplainsByUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ComplainsByUserQuery, ComplainsByUserQueryVariables>(
+    ComplainsByUserDocument,
+    options
+  );
 }
-    `;
+export function useComplainsByUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ComplainsByUserQuery,
+    ComplainsByUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    ComplainsByUserQuery,
+    ComplainsByUserQueryVariables
+  >(ComplainsByUserDocument, options);
+}
+export type ComplainsByUserQueryHookResult = ReturnType<
+  typeof useComplainsByUserQuery
+>;
+export type ComplainsByUserLazyQueryHookResult = ReturnType<
+  typeof useComplainsByUserLazyQuery
+>;
+export type ComplainsByUserQueryResult = Apollo.QueryResult<
+  ComplainsByUserQuery,
+  ComplainsByUserQueryVariables
+>;
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      isAdmin
+    }
+  }
+`;
 
 /**
  * __useMeQuery__
@@ -661,33 +962,37 @@ export const MeDocument = gql`
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-      }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
-        }
+export function useMeQuery(
+  baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
+export function useMeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+}
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const UserDocument = gql`
-    query User($id: Int!) {
-  user(id: $id) {
-    errors
-    user {
-      id
-      username
-      firstname
-      lastname
-      email
-      phonenumber
-      wardNo
+  query User($id: Int!) {
+    user(id: $id) {
+      errors
+      user {
+        id
+        username
+        firstname
+        lastname
+        email
+        phonenumber
+        wardNo
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useUserQuery__
@@ -705,14 +1010,21 @@ export const UserDocument = gql`
  *   },
  * });
  */
-export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-      }
-export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-        }
+export function useUserQuery(
+  baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+}
+export function useUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(
+    UserDocument,
+    options
+  );
+}
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;

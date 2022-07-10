@@ -37,6 +37,10 @@ __decorate([
     (0, type_graphql_1.Field)(() => type_graphql_1.Float),
     __metadata("design:type", Number)
 ], ComplainInput.prototype, "longitude", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
+], ComplainInput.prototype, "imagePublicId", void 0);
 ComplainInput = __decorate([
     (0, type_graphql_1.InputType)()
 ], ComplainInput);
