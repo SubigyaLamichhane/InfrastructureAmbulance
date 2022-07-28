@@ -48,7 +48,7 @@ const CreateComplain: React.FC<CreateComplainProps> = ({}) => {
   const uploadImage = async () => {
     const formData = new FormData();
     formData.append('file', imageSelected);
-    formData.append('upload_preset', 'lntrqgee');
+    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY);
     const response: { data: CloudinaryResponse } = await axios.post(
       'https://api.cloudinary.com/v1_1/infrastructure-ambulance/image/upload',
       formData
