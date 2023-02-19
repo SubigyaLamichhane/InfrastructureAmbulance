@@ -1,0 +1,22 @@
+query Complain($id: Int!) {
+  complain(id: $id) {
+    title
+    description
+    latitude
+    longitude
+    createdAt
+    category
+    wardNo
+    imagePublicId
+    user {
+      user {
+        id
+        username
+        firstname
+        lastname
+        phonenumber
+        email
+      }
+    }
+  }
+}

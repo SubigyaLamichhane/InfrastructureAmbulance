@@ -1,0 +1,3 @@
+mutation DoesPhoneNumberExist($phonenumber: Long!) {
+  doesPhoneNumberExist(phonenumber: $phonenumber)
+}

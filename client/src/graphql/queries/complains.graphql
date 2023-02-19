@@ -1,0 +1,22 @@
+query Complains($limit: Int!, $cursor: String) {
+  complains(limit: $limit, cursor: $cursor) {
+    complains {
+      id
+      descriptionSnippet
+      title
+      createdAt
+      latitude
+      longitude
+      wardNo
+      latitude
+      imagePublicId
+      user {
+        user {
+          id
+          username
+        }
+      }
+    }
+    hasMore
+  }
+}

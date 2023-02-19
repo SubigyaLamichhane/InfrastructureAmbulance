@@ -1,0 +1,13 @@
+query ComplainsByUser($limit: Int!, $userId: Int!, $cursor: String) {
+  complainsByUser(limit: $limit, userId: $userId, cursor: $cursor) {
+    complains {
+      id
+      wardNo
+      descriptionSnippet
+      title
+      createdAt
+      imagePublicId
+    }
+    hasMore
+  }
+}

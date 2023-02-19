@@ -1,0 +1,23 @@
+query ComplainsByWard($limit: Int!, $cursor: String, $wardNo: Int!) {
+  complainsByWard(limit: $limit, cursor: $cursor, wardNo: $wardNo) {
+    complains {
+      id
+      descriptionSnippet
+      title
+      createdAt
+      latitude
+      longitude
+      wardNo
+      latitude
+      imagePublicId
+      category
+      user {
+        user {
+          id
+          username
+        }
+      }
+    }
+    hasMore
+  }
+}

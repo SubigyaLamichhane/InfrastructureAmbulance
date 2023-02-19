@@ -1,0 +1,19 @@
+mutation CreateComplain($input: ComplainInput!) {
+  createComplain(input: $input) {
+    id
+    descriptionSnippet
+    title
+    createdAt
+    latitude
+    longitude
+    wardNo
+    latitude
+    imagePublicId
+    user {
+      user {
+        id
+        username
+      }
+    }
+  }
+}

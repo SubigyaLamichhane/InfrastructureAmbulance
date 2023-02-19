@@ -1,0 +1,23 @@
+query ComplainsByCategory($limit: Int!, $cursor: String, $category: String!) {
+  complainsByCategory(limit: $limit, cursor: $cursor, category: $category) {
+    complains {
+      id
+      descriptionSnippet
+      title
+      createdAt
+      latitude
+      longitude
+      wardNo
+      latitude
+      imagePublicId
+      category
+      user {
+        user {
+          id
+          username
+        }
+      }
+    }
+    hasMore
+  }
+}
