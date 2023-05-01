@@ -1,3 +1,0 @@
-mutation DoesUsernameExist($username: String!) {
-  doesUsernameExist(username: $username)
-}
